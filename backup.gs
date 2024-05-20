@@ -3,7 +3,7 @@ function fetchJiraData() {
 
   var jiraDomain = 'https://moveinc.atlassian.net';
   var username = 'mehvish.hashmi.contractor@realtor.com';
-  var apiToken = 'ATATT3xFfGF0vXUkdHgsAiXjLob-mBZmwiMfbhunuJ8SLSkcBr0qI1yiyAEqpXxJCKPk4udzVIj2d2g69KD_to3D4TlGt8qjjZLF14S7aKqYzqau4GXZaBJn-ddCppakS2AnWxC03QKvQLgUIAx5CpBS3ICbCPQSMY8l783WpeyLSjgQh4yo3cw=7F1E23C3';
+  var apiToken = 'YOUR_API_TOKEN';
   var jqlQuery = "project in (MTECH, ANDROID, IOS, 'TL-TM Android', 'TL-TM iOS', 'TL-TM MTECH') AND sprint in openSprints() AND issueType = sub-task AND assignee IN (712020:4bb113e3-a8bc-4735-81b2-65e06022ccfe, 712020:c2155c7e-5b33-4b53-a4e2-5c763506a4f4, " +
     "712020:48ab14ca-5ecf-427c-9324-953f28b1e639, 712020:09939799-9b85-4101-afc9-88f749b195b7, 712020:03d0778c-ea5a-4b9e-a845-e4bbf4315bc0, 712020:f591dbe6-1a63-4dbd-9aef-d7af539d9d20, 712020:4bb113e3-a8bc-4735-81b2-65e06022ccfe, 62df5698f6dd8b8b0eab6dc8, 712020:c4c0de3c-c401-46d9-b4da-d9c37bf32236)";
 
