@@ -47,10 +47,10 @@ function fetchJiraData() {
     "SubTask Status",
     "Parent Status",
     "Sprint Name",
+    "Scrum Team",
     "Sprint State",
     "Sprint Start Date",
     "Sprint End Date",
-    "Scrum Team",
     "Parent Self",
   ];
 
@@ -60,8 +60,7 @@ function fetchJiraData() {
   var headerRange = sheet.getRange(1, 1, 1, headers.length);
   headerRange.setFontWeight("bold").setFontSize(12);
 
-  var assigneeMap = {};
-  var projectSprintsMap = {};
+  var data = [];
 
   issues.forEach(function (issue) {
     var parentTicket = issue.fields.parent
@@ -90,10 +89,6 @@ function fetchJiraData() {
       ? issue.fields["customfield_10137"].value
       : "";
 
-    if (assignee !== "Unassigned") {
-      assigneeMap[assignee] = assignee;
-    }
-
     var row = [
       projectName,
       parentTicket,
@@ -104,52 +99,28 @@ function fetchJiraData() {
       subTaskStatus,
       parentStatus,
       sprintName,
+      scrumTeam,
       sprintState,
       sprintStartDate,
       sprintEndDate,
-      scrumTeam,
       parentSelf,
     ];
-    sheet.appendRow(row);
 
-    // Group sprints by project
-    if (!projectSprintsMap[projectName]) {
-      projectSprintsMap[projectName] = { active: [], closed: [] };
-    }
-    if (sprintState === "active") {
-      projectSprintsMap[projectName].active.push(row);
-    } else if (sprintState === "closed") {
-      projectSprintsMap[projectName].closed.push(row);
-    }
+    data.push(row);
   });
 
-  // Create a new sheet for active sprints and the last closed sprint per project
-  var sheet2 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
-    "Active Sprint Data 2"
-  );
-  if (!sheet2) {
-    sheet2 = SpreadsheetApp.getActiveSpreadsheet().insertSheet(
-      "Active Sprint Data 2"
-    );
-  } else {
-    sheet2.clear(); // clear sheet
-  }
-
-  sheet2.appendRow(headers);
-  headerRange = sheet2.getRange(1, 1, 1, headers.length);
-  headerRange.setFontWeight("bold").setFontSize(12);
-
-  // Add active sprints and the last closed sprint per project to the new sheet
-  for (var project in projectSprintsMap) {
-    var sprints = projectSprintsMap[project];
-    sprints.active.forEach(function (row) {
-      sheet2.appendRow(row);
-    });
-    if (sprints.closed.length > 0) {
-      var lastClosedSprint = sprints.closed[sprints.closed.length - 1];
-      sheet2.appendRow(lastClosedSprint);
+  // Sort data by Sprint State ASC and then by Assignee ASC
+  data.sort(function (a, b) {
+    if (a[10] === b[10]) {
+      return a[4].localeCompare(b[4]);
     }
-  }
+    return a[10].localeCompare(b[10]);
+  });
+
+  // Append sorted data to the sheet
+  data.forEach(function (row) {
+    sheet.appendRow(row);
+  });
 }
 
 function formatDates() {
